@@ -1,18 +1,29 @@
-# Salesforce DX Project: Next Steps
+# Apex JSON Path
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This repository contains a minimum implementation of the [JSON Path Syntax](https://support.smartbear.com/alertsite/docs/monitors/api/endpoint/jsonpath.html). With this you can access data from a JSON string using a path specified by another string.
 
-## How Do You Plan to Deploy Your Changes?
+Might come in handy with integrations, specially, where one might have to read data from a JSON payload according to some specifications from data or metadata instead of deserializing the whole thing to an Apex type.
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## Usage
 
-## Configure Your Salesforce DX Project
+To get an attribute value:
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+```apex
+JSONPath j = new JSONPath('{"name":"John","company":{"name":"Company"}}');
 
-## Read All About It
+String companyName = j.get('$.company.name');
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+System.assertEquals('Company', companyName, 'Wrong company name.');
+```
+
+It works for returning entire objects. So you could use `$.company` to get the `Object` that contains the company data (then you could cast it to a `Map<String, Object>` and access the `name` from there if you wanted to). This is also true for returning inner lists.
+
+```apex
+JSONPath jpListNested = new JSONPath('[{"attr":[{"name":"John"},{"name":"Mary"}]}]');
+
+System.assertEquals(
+    'Mary',
+    jpListNested.get('$[0].attr[1].name'),
+    'Incorrect data.'
+);
+```
