@@ -27,3 +27,19 @@ System.assertEquals(
     'Incorrect data.'
 );
 ```
+
+Also works for returning specific attributes from inner lists. So if the JSON payload is a list or the object contains a list then it is reachable using the `[]` syntax:
+
+```apex
+JSONPath jpAttributeListFromObjectList = new JSONPath(
+    '[{"name":"John"},{"name":"Mary"}]'
+);
+List<Object> names = (List<Object>) jpAttributeListFromObjectList.get('$[].name');
+// names[0] = John and names[1] = 'Mary'
+
+JSONPath jpAttributeListFromInnerObjectList = new JSONPath(
+    '{"people":[{"name":"John"},{"name":"Mary"}]}}'
+);
+names = (List<Object>) jpAttributeListFromInnerObjectList.get('$.people[].name');
+// names[0] = John and names[1] = 'Mary'
+```
