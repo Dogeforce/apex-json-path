@@ -8,7 +8,12 @@ public class JSONPath {
     }
 
     public Object get(String path) {
-        return this.get(path.removeStart('$'), this.data);
+        try {
+            Object o = this.get(path.removeStart('$'), this.data);
+            return o;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Object get(String path, Object data) {
@@ -39,7 +44,7 @@ public class JSONPath {
         if (currentLevel.endsWith(']')) {
             return this.get(
                 ('[' +
-                currentLevel.reverse().substringBetween(']', '[') +
+                currentLevel.reverse().substringBetween(']', '[').reverse() +
                 '].' +
                 String.join(levels, '.')),
                 d.get(currentLevel.split('\\[').remove(0))
@@ -65,30 +70,18 @@ public class JSONPath {
                         this.get(String.join(levels, '.'), objectInstance)
                     );
                 }
-                System.debug(result);
                 return result;
             }
             return dataList;
         }
 
-        Integer index = getIndex(currentLevel);
+        Integer index = Integer.valueOf(
+            currentLevel.substringBetween('[', ']')
+        );
 
         return levels.size() == 0
             ? dataList.get(index)
             : this.get(String.join(levels, '.'), dataList.get(index));
-    }
-
-    private Integer getIndex(String currentLevel) {
-        String indexStr = currentLevel.substringBetween('[', ']');
-
-        if (indexStr == null) {
-            String m = 'Invalid path.';
-            JSONPathException e = new JSONPathException(m);
-            e.setMessage(m);
-            throw e;
-        }
-
-        return Integer.valueOf(indexStr);
     }
 
     public class JSONPathException extends Exception {
