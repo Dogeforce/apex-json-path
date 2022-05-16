@@ -39,5 +39,27 @@ private class JSONPathTest {
             jpListNested.get('$[0].attr[1].name'),
             'Incorrect data.'
         );
+        System.assert(
+            jpListNested.get('$[].name') instanceof List<Object>,
+            'Should have returned a list.'
+        );
+        JSONPath jpAttributeListFromObjectList = new JSONPath(
+            '[{"name":"John"},{"name":"Mary"}]'
+        );
+        List<Object> names = (List<Object>) jpAttributeListFromObjectList.get('$[].name');
+        System.assert(
+            names[0] == 'John' &&
+            names[1] == 'Mary',
+            'Should have returned a list of names.'
+        );
+        JSONPath jpAttributeListFromInnerObjectList = new JSONPath(
+            '{"people":[{"name":"John"},{"name":"Mary"}]}}'
+        );
+        names = (List<Object>) jpAttributeListFromInnerObjectList.get('$.people[].name');
+        System.assert(
+            names[0] == 'John' &&
+            names[1] == 'Mary',
+            'Should have returned a list of names.'
+        );
     }
 }
