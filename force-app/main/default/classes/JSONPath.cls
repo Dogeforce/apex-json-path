@@ -75,6 +75,36 @@ public class JSONPath {
             return dataList;
         }
 
+        if (currentLevel.endsWith('()')) {
+            switch on currentLevel.removeEnd('()') {
+                when 'min' {
+                    return this.getMin(dataList);
+                }
+                when 'max' {
+                    return this.getMax(dataList);
+                }
+                when 'avg' {
+                    return this.getAvg(dataList);
+                }
+                when 'sum' {
+                    return this.getSum(dataList);
+                }
+                when 'length', 'size' {
+                    return dataList.size();
+                }
+                when 'empty' {
+                    return dataList.isEmpty();
+                }
+                when else {
+                    throw new JSONPath.JSONPathException(
+                        'Non-existing function "' +
+                        currentLevel.removeEnd('()') +
+                        '".'
+                    );
+                }
+            }
+        }
+
         Integer index = Integer.valueOf(
             currentLevel.substringBetween('[', ']')
         );
@@ -82,6 +112,52 @@ public class JSONPath {
         return levels.size() == 0
             ? dataList.get(index)
             : this.get(String.join(levels, '.'), dataList.get(index));
+    }
+
+    private Double getMin(List<Object> numbers) {
+        return getMinOrMax(numbers, true);
+    }
+
+    private Double getMax(List<Object> numbers) {
+        return getMinOrMax(numbers, false);
+    }
+
+    private Double getMinOrMax(List<Object> numbers, Boolean isMin) {
+        Double result;
+
+        for (Object obj : numbers) {
+            Double d = (Double) obj;
+            if (result == null) {
+                result = d;
+                continue;
+            }
+
+            if (isMin) {
+                if (d < result) {
+                    result = d;
+                }
+            } else {
+                if (d > result) {
+                    result = d;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private Double getAvg(List<Object> numbers) {
+        return getSum(numbers) / numbers.size();
+    }
+
+    private Double getSum(List<Object> numbers) {
+        Double sum = 0;
+
+        for (Object obj : numbers) {
+            sum += obj != null ? (Double) obj : 0;
+        }
+
+        return sum;
     }
 
     public class JSONPathException extends Exception {

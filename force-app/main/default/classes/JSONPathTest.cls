@@ -74,5 +74,37 @@ private class JSONPathTest {
             twoDigitsList.get('$.integers[10]'),
             'Should have returned 10.'
         );
+
+        JSONPath testArrayFunctions = new JSONPath('{"numbers":[1, 2, 3, 40]}');
+        System.assertEquals(
+            false,
+            testArrayFunctions.get('$.numbers.empty()'),
+            'Incorrect result for "empty".'
+        );
+        System.assertEquals(
+            4,
+            testArrayFunctions.get('$.numbers.length()'),
+            'Incorrect result for "length".'
+        );
+        System.assertEquals(
+            4,
+            testArrayFunctions.get('$.numbers.size()'),
+            'Incorrect result for "size".'
+        );
+        System.assertEquals(
+            1,
+            testArrayFunctions.get('$.numbers.min()'),
+            'Incorrect result for "min".'
+        );
+        System.assertEquals(
+            40,
+            testArrayFunctions.get('$.numbers.max()'),
+            'Incorrect result for "max".'
+        );
+        System.assertEquals(
+            11.5,
+            testArrayFunctions.get('$.numbers.avg()'),
+            'Incorrect result for "avg".'
+        );
     }
 }
