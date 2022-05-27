@@ -43,3 +43,27 @@ JSONPath jpAttributeListFromInnerObjectList = new JSONPath(
 names = (List<Object>) jpAttributeListFromInnerObjectList.get('$.people[].name');
 // names[0] = John and names[1] = 'Mary'
 ```
+
+### List functions
+
+The following functions are available for usage with list attributes:
+
+1. `min` to get the minimum value (returns a double);
+1. `max` to get the maximum value (returns a double);
+1. `avg` to get the average value (returns a double);
+1. `sum` to get the sum of values (returns a double);
+1. `size` and `length` to get the quantity of values in the list (returns an integer);
+1. `empty` to get a boolean indicating if the list is empty;
+
+Usage:
+
+```apex
+JSONPath arrayFunctions = new JSONPath('{"numbers":[1, 2, 3, 40]}');
+
+arrayFunctions.get('$.numbers.empty()');  // false
+arrayFunctions.get('$.numbers.length()'); // 4
+arrayFunctions.get('$.numbers.size()');   // 4
+arrayFunctions.get('$.numbers.min()');    // 1
+arrayFunctions.get('$.numbers.max()');    // 40
+arrayFunctions.get('$.numbers.avg()');    // 11.5
+```
