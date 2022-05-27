@@ -16,7 +16,7 @@ private class JSONPathTest {
         );
         System.assertEquals('John', jpList.get('$[0].name'), 'Incorrect data.');
         System.assert(
-            jpList.get('$[]') instanceof List<Object>,
+            jpList.get('$[*]') instanceof List<Object>,
             'Should be a list.'
         );
         System.assert(
@@ -32,14 +32,14 @@ private class JSONPathTest {
             'Incorrect data.'
         );
         System.assert(
-            jpListNested.get('$[].name') instanceof List<Object>,
+            jpListNested.get('$[*].name') instanceof List<Object>,
             'Should have returned a list.'
         );
         JSONPath jpAttributeListFromObjectList = new JSONPath(
             '[{"name":"John"},{"name":"Mary"}]'
         );
         List<Object> names = (List<Object>) jpAttributeListFromObjectList.get(
-            '$[].name'
+            '$[*].name'
         );
         System.assert(
             names[0] == 'John' &&
@@ -50,7 +50,7 @@ private class JSONPathTest {
             '{"people":[{"name":"John"},{"name":"Mary"}]}}'
         );
         names = (List<Object>) jpAttributeListFromInnerObjectList.get(
-            '$.people[].name'
+            '$.people[*].name'
         );
         System.assert(
             names[0] == 'John' &&

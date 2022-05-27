@@ -62,7 +62,7 @@ public class JSONPath {
         Object data
     ) {
         List<Object> dataList = (List<Object>) data;
-        if (currentLevel.startsWith('[]')) {
+        if (currentLevel.startsWith('[*]')) {
             if (levels.size() > 0) {
                 List<Object> result = new List<Object>();
                 for (Object objectInstance : dataList) {
