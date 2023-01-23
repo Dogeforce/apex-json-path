@@ -107,4 +107,21 @@ private class JSONPathTest {
             'Incorrect result for "avg".'
         );
     }
+
+    @IsTest
+    static void usesHelperFunctionsToReturnStrongTypes() {
+        String exampleJson = '{ "number": 1, "aDate": "2020-01-01", "aDatetime": "2020-01-01 00:00:000Z", "text": "hi", "exampleObject": { "myProp": 1 } }';
+
+        JSONPath path = new JSONPath(exampleJson);
+
+        System.assertEquals(1, path.getNumber('$.number'));
+        System.assertEquals(Date.newInstance(2020, 1, 1), path.getDate('$.aDate'));
+        System.assertEquals(Datetime.newInstance(2020, 1, 1), path.getDatetime('$.aDatetime'));
+        System.assertEquals('hi', path.getString('$.text'));
+        System.assertEquals(1, ((ExampleObject) path.getDeserializedObject('$.exampleObject', ExampleObject.class)).myProp);
+    }
+
+    public class ExampleObject {
+        public Integer myProp;
+    }
 }
