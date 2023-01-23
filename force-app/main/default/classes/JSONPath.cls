@@ -7,6 +7,26 @@ public class JSONPath {
         this.data = JSON.deserializeUntyped(rawJson);
     }
 
+    public Decimal getNumber(String path) {
+        return (Decimal) this.get(path);
+    }
+
+    public Date getDate(String path) {
+        return Date.valueOf(this.getString(path));
+    }
+
+    public Datetime getDatetime(String path) {
+        return Datetime.valueOf(this.getString(path));
+    }
+
+    public Object getDeserializedObject(String path, Type typeToDeserialize) {
+        return JSON.deserialize(JSON.serialize(this.get(path)), typeToDeserialize);
+    }
+
+    public String getString(String path) {
+        return (String) this.get(path);
+    }
+
     public Object get(String path) {
         try {
             Object o = this.get(path.removeStart('$'), this.data);
